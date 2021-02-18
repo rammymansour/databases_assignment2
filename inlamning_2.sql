@@ -3,7 +3,7 @@ skapa en tabell locations och bank acoounts med data I som vi fick I inlämning 
 
 
 för att använda databasen bank account
-use bank_account;
+USE bank_account;
 
 Skapa locations tabell 
 CREATE TABLE locations (id INT PRIMARY KEY AUTO_INCREMENT, 
@@ -12,7 +12,7 @@ address VARCHAR (100));
 
 
 lägga data I location tabellen
-insert into locations ( id, country, address ) values (1,"SE" ,"Vimmerbygatan 20");
+INSERT INTO locations ( id, country, address ) VALUES (1,"SE" ,"Vimmerbygatan 20");
 +----+---------+------------------+
 | id | country | address          |
 +----+---------+------------------+
@@ -25,7 +25,7 @@ insert into locations ( id, country, address ) values (1,"SE" ,"Vimmerbygatan 20
 
 nu måste jag koppla  Corbin Hauck till brunnsgatan 7 
 först vill jag se om Corban finns I databasen och vad har han för id
-select * from bank_accounts where first_name = "Corbin";
+SELECT * FROM bank_accounts WHERE first_name = "Corbin";
 
 +----+------------+-----------+---------+
 | id | first_name | last_name | holding |
@@ -50,8 +50,8 @@ select * from bank_accounts where first_name = "Corbin";
 
 
 skapa en relation tabell som innehåller location id och bank-konto id 
-CREATE TABLE home ( locations_id int NOT NULL, 
-bank_account_id int NOT NULL, 
+CREATE TABLE home ( locations_id INT NOT NULL, 
+bank_account_id INT NOT NULL, 
 FOREIGN KEY (locations_id) REFERENCES locations(id), 
 FOREIGN KEY (bank_account_id) REFERENCES bank_accounts(id));
 
@@ -59,10 +59,10 @@ FOREIGN KEY (bank_account_id) REFERENCES bank_accounts(id));
 
 
 Jag lägger location id och bank account id I tabellen home
-insert into home (locations_id, bank_account_id) values (4,55);
-insert into home (locations_id, bank_account_id) values (2,89);
-insert into home (locations_id, bank_account_id) values (1,174);
-insert into home (locations_id, bank_account_id) values (3,170);
+INSERT INTO home (locations_id, bank_account_id) VALUES (4,55);
+INSERT INTO home (locations_id, bank_account_id) VALUES (2,89);
+INSERT INTO home (locations_id, bank_account_id) VALUES (1,174);
+INSERT INTO home (locations_id, bank_account_id) VALUES (3,170);
 
 
 
@@ -91,10 +91,10 @@ JOIN locations ON locations.id=home.locations_id;
 +------------+------------------+---------+
 
 Alla bank konto som är kopplad till SE 
-select first_name,address,country from home 
-join bank_accounts ON bank_accounts.id=home.bank_account_id 
-join locations ON locations.id=home.locations_id 
-where country="SE";
+SELECT first_name,address,country FROM home 
+JOIN bank_accounts ON bank_accounts.id=home.bank_account_id 
+JOIN locations ON locations.id=home.locations_id 
+WHERE country="SE";
 +------------+------------------+---------+
 | first_name | address          | country |
 +------------+------------------+---------+
@@ -156,13 +156,36 @@ DELETE
 ________________________________________________________________________________________
 
 1. Vad är motsvarigheten i MongoDB till en foreign key? 
-
+    references (DBRef)
 
 2. Vad är motsvarigheten till en SELECT i MongoDB? 
+    find()
+    till exempel
+    db.locations.find()
 
 3. Hur hade du löst del 2 och 3 i MongoDB? (du behöver inte göra en komplett lösning, men beskriv på ett ungefär hur du hade gjort) 
+    Del 2
+    jag hade anvät mig utav references. Till exempel om jag skulle vilja lägga till ett address till Waynn
+    (en person som jag har i databasen) då hade jag tagit hans id och id på platsen och updaterade.
+    db.bank_accounts.update(
+    {
+        _id : ObjectId("601182741a7d231d1d2a07b9")
+        },
+    {
+        $set: {home_address: {
+            $ref: "locations",
+            $id: ObjectId("602ee3aacf8b31a5e314a93c")
+        }
+    }
+    })
+    Del 3 
+    Det enklaste sättet jag hade gjort det är att leta efter id nummret på SE addressen i bank_accounts collections
+    db.bank_accounts.find({home_address: DBRef("locations", ObjectId("602ee3aacf8b31a5e314a93c"))})
+
+
 
 4. Vad behöver du för information för att kunna logga in i någon annans databas? 
+
 
 5. Varför skulle man vilja använda sig utav en databas? 
 
