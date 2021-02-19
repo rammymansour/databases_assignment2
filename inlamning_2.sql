@@ -163,9 +163,17 @@ ________________________________________________________________________________
     till exempel
     db.locations.find()
 
-3. Hur hade du löst del 2 och 3 i MongoDB? (du behöver inte göra en komplett lösning, men beskriv på ett ungefär hur du hade gjort) 
-    Del 2
-    jag hade anvät mig utav references. Till exempel om jag skulle vilja lägga till ett address till Waynn
+3. Hur hade du löst del 2 och 3 i MongoDB? (du behöver inte göra en komplett lösning, 
+    men beskriv på ett ungefär hur du hade gjort) 
+    
+        Del 2
+    1. hade lagt till home address direkt till varje person och då hade det varit lättare att leta efter alla peroner som är kopplade till SE
+    db.bank_accounts.updateOne(
+    { $and: [{ first_name: "Wynn", last_name: "Prowting" }] },
+    { $set: { home_address: [{ country: "SE" }, { address: "Vimmerbygatan 20" }] } })
+
+    
+    2.jag hade anvät mig utav references. Till exempel om jag skulle vilja lägga till ett address till Waynn
     (en person som jag har i databasen) då hade jag tagit hans id och id på platsen och updaterade.
     db.bank_accounts.update(
     {
@@ -178,15 +186,30 @@ ________________________________________________________________________________
         }
     }
     })
-    Del 3 
-    Det enklaste sättet jag hade gjort det är att leta efter id nummret på SE addressen i bank_accounts collections
+        Del 3
+    1. db.bank_accounts.find({home_address:{country:"SE"}})
+
+    2. Det enklaste sättet jag hade gjort det är att leta efter id nummret på SE addressen i bank_accounts collections
+    
     db.bank_accounts.find({home_address: DBRef("locations", ObjectId("602ee3aacf8b31a5e314a93c"))})
 
 
 
 4. Vad behöver du för information för att kunna logga in i någon annans databas? 
-
+    Username,password,Ip-address och port
 
 5. Varför skulle man vilja använda sig utav en databas? 
+    Vi kan strukturerar den hur vi vill.
+    Vi kan hämta ut data snabbt och på olika sätt
+    Vi kan hantera vilka som får/kan använda, hämta data eller ändra i databasen
 
 6. Nämn några andra ställen / situationer utöver databaser som CRUD används 
+    fil hantering 
+    HTTP
+    DDS 
+    
+    CRUD 	SQL 	HTTP 	DDS
+    create 	INSERT 	PUT 	write
+    read 	SELECT 	GET 	read
+    update 	UPDATE 	PUT 	write
+    delete 	DELETE 	DELETE 	dispose 
